@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:17.0
+    container_name: podracing_postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: podracing-database
+      POSTGRES_USER: admin-local
+      POSTGRES_PASSWORD: pw
+
+volumes:
+  postgres_data:
