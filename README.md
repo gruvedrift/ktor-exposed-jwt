@@ -43,3 +43,36 @@ If the server starts successfully, you'll see the following output:
 2024-12-04 14:32:45.682 [main] INFO  Application - Responding at http://0.0.0.0:8080
 ```
 
+### IDEAS
+
+- Custom serializer / deserializer
+- Add tests
+- Using Exposed: Exposed is a lightweight SQL library on top of a JDBC driver for the Kotlin programming language.
+Cose to use the DSL 
+- try out a try / catch style controller
+- Add another datasource to check that one can, in fact have two datasources in Exposed. 
+- Ephemeral/Disposable Test DB. Used when running tests in application. ( full integration test )
+
+```kotlin
+post {
+    try {
+        val task = call.receive<Task>()
+        repository.addTask(task)
+        call.respond(HttpStatusCode.NoContent)
+    } catch (ex: IllegalStateException) {
+        call.respond(HttpStatusCode.BadRequest)
+    } catch (ex: JsonConvertException) {
+        call.respond(HttpStatusCode.BadRequest)
+    }
+}
+```
+
+### Differences from spring boot:
+
+- Ktor ( without dependency injection ) does not rely on annotations like `@Controller` `@Bean` etc. It follows a
+  declarative and compositional style,
+  where we explicitly register features like routing by extending the Application
+  function (`Application.installRoutes()`).
+- Ktor handles Serialization through the `ContentNegotiation` plugin. Instead of wrapping the response in
+  a `ResponseEntity` class, the http responses
+  are created directly through the 

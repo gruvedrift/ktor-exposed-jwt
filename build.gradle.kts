@@ -1,5 +1,6 @@
 val h2_version: String by project
 val kotlin_version: String by project
+val exposed_version: String by project
 val logback_version: String by project
 val postgres_version: String by project
 
@@ -28,6 +29,8 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json")
 
     implementation("org.postgresql:postgresql:$postgres_version")
+    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     implementation("com.zaxxer:HikariCP:5.1.0") // JDBC connection pool
     implementation("org.flywaydb:flyway-core:10.10.0") // newer version for newer PSQL
     implementation("org.flywaydb:flyway-database-postgresql:10.10.0") // needed to actually run the flyway migration
