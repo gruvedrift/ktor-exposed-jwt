@@ -29,27 +29,28 @@ class EngineRepository {
      *  "Hey, when you build the SQL insert, assign this value to this column."
      * */
     fun createEngine(createEngineRequest: CreateEngineRequest): Int = transaction {
-        EngineTable.insert { statement ->
-            statement.set(manufacturer, createEngineRequest.manufacturer)
-            statement[effectOutput] = createEngineRequest.effectOutput
-            statement[model] = createEngineRequest.model
-        }.insertedCount
+        EngineTable.insert { stm ->
+            stm[manufacturer] = createEngineRequest.manufacturer
+            stm[effectOutput] = createEngineRequest.effectOutput
+            stm[model] = createEngineRequest.model
+        } get EngineTable.id
     }
 
     fun updateEngineEffect(updateEngineRequest: UpdateEngineEffectRequest): Int = transaction {
+        EngineTable.update(
+            { EngineTable.id eq updateEngineRequest.id }
+        ) { stm ->
+            stm[effectOutput] = updateEngineRequest.effectOutput
+        }
+    }
+
+    // Only for reference without trailing lambda
+    fun updateEngineEffectExplicit(updateEngineRequest: UpdateEngineEffectRequest): Int = transaction {
         EngineTable.update(
             where = { EngineTable.id eq updateEngineRequest.id },
             limit = null,
             body = { statement -> statement[effectOutput] = updateEngineRequest.effectOutput }
         )
-    }
-
-    fun updateEngineTrailingLambda(updateEngineRequest: UpdateEngineEffectRequest): Int = transaction {
-        EngineTable.update(
-            { EngineTable.id eq updateEngineRequest.id }
-        ) { statement ->
-            statement[effectOutput] = updateEngineRequest.effectOutput
-        }
     }
 
     // deleteWhere only takes in a single lambda, so can just write it out as it stands, no need to wrap it

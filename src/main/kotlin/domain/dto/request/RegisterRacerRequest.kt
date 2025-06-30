@@ -1,5 +1,8 @@
 package com.gruvedrift.domain.dto.request
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class RegisterRacerRequest(
     val name: String,
     val species: String,

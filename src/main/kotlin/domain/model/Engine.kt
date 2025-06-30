@@ -1,4 +1,8 @@
 package com.gruvedrift.domain.model
+
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Engine(
     val id: Int,
     val manufacturer: String,

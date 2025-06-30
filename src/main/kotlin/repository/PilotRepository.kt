@@ -23,41 +23,33 @@ class PilotRepository {
     }
 
     fun createPilot(createPilotRequest: CreatePilotRequest): Int = transaction {
-        PilotTable.insert { statement ->
-            statement[podracerId] = createPilotRequest.podracerId
-            statement[pitCrewId] = createPilotRequest.pitCrewId
-            statement[name] = createPilotRequest.name
-            statement[species] = createPilotRequest.species
-            statement[homePlanet] = createPilotRequest.homePlanet
-        }.insertedCount
+        PilotTable.insert { stm ->
+            stm[podracerId] = createPilotRequest.podracerId
+            stm[pitCrewId] = createPilotRequest.pitCrewId
+            stm[name] = createPilotRequest.name
+            stm[species] = createPilotRequest.species
+            stm[homePlanet] = createPilotRequest.homePlanet
+        } get PilotTable.id
     }
 
     fun updatePilotPodracer(updatePilotPodracerRequest: UpdatePilotPodracerRequest): Int = transaction {
         PilotTable.update(
             { PilotTable.id eq updatePilotPodracerRequest.pilotId }
-        ) { statement -> statement[podracerId] = updatePilotPodracerRequest.pilotId }
+        ) { stm -> stm[podracerId] = updatePilotPodracerRequest.podracerId }
     }
 
-    fun updatePilotExplicit(updatePilotPodracerRequest: UpdatePilotPodracerRequest): Int = transaction {
-        PilotTable.update(
-            where = { PilotTable.id eq updatePilotPodracerRequest.pilotId },
-            limit = null,
-            body = { statement -> statement[podracerId] = updatePilotPodracerRequest.podracerId }
-        )
-    }
 
     fun deletePilotById(id: Int): Int = transaction {
         PilotTable.deleteWhere {
             PilotTable.id eq id
         }
     }
-
 }
 
 object PilotTable : Table() {
     val id = integer("id").autoIncrement()
-    val podracerId = integer("podracer_id")
-    val pitCrewId = integer("pit_crew_id")
+    val podracerId = integer("podracer_id").references(PodracerTable.id)
+    val pitCrewId = integer("pit_crew_id").references(PitCrewTable.id)
     val name = varchar("name", 512)
     val species = varchar("species", 512)
     val homePlanet = varchar("home_planet", 512)
@@ -66,7 +58,7 @@ object PilotTable : Table() {
 /**
  * "this" is a ResultRow. It stores data as a map of key - value pairs.
  * mapof(
- *  PilotTable.id = 1
+ *  PilotTable. Id = 1
  *  PilotTable.podracerId = 6
  *  ...
  *  )

@@ -1,4 +1,8 @@
 package com.gruvedrift.domain.model
+
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Pilot(
     val id: Int,
     val podracerId: Int,

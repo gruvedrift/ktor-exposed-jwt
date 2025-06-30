@@ -77,7 +77,7 @@ class DroidRepository {
 // singleton object for mapping between domain objects to database objects. It is a base class for any DB table.
 object DroidTable : Table("droid") {
     val id = integer("id").autoIncrement()
-    val pitCrewId = integer("pit_crew_id")
+    val pitCrewId = integer("pit_crew_id").references(PitCrewTable.id)
     val manufacturer = varchar("manufacturer", length = 512)
     val price = integer("price")
 

@@ -1,10 +1,12 @@
 package com.gruvedrift.domain.dto.response
 
+import kotlinx.serialization.Serializable
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.ln
 import kotlin.math.pow
 
+@Serializable
 data class PodracerAnalyticsResponse(
     val powerToWeightRatio: Double,
     val efficiencyIndex: Double,
@@ -13,6 +15,7 @@ data class PodracerAnalyticsResponse(
     val flamethrower: Boolean,
 )
 
+@Serializable
 data class PodracerAnalyticsCoreData(
     val weight: Int,
     val maxSpeed: Int,

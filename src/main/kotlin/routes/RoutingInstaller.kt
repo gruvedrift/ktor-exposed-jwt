@@ -21,5 +21,8 @@ fun Application.installRoutes() {
         testRoutes(
            droidRepository, engineRepository, pilotRepository, pitCrewRepository, podracerRepository
         )
+        engineRoutes(engineRepository)
+        pilotRoutes(pilotRepository)
+        podracerRoutes(podracerRepository)
     }
 }
