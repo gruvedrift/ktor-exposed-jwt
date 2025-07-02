@@ -5,6 +5,7 @@ import com.gruvedrift.repository.EngineRepository
 import com.gruvedrift.repository.PilotRepository
 import com.gruvedrift.repository.PitCrewRepository
 import com.gruvedrift.repository.PodracerRepository
+import com.gruvedrift.service.DroidService
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
@@ -13,11 +14,12 @@ private val engineRepository = EngineRepository()
 private val pilotRepository = PilotRepository()
 private val pitCrewRepository = PitCrewRepository()
 private val podracerRepository = PodracerRepository()
+private val droidService = DroidService(droidRepository)
 
 
 fun Application.installRoutes() {
     routing {
-        droidRoutes(droidRepository)
+        droidRoutes(droidService = droidService)
         testRoutes(
            droidRepository, engineRepository, pilotRepository, pitCrewRepository, podracerRepository
         )

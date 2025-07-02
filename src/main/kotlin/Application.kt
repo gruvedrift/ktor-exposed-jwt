@@ -1,6 +1,7 @@
 package com.gruvedrift
 
 import com.gruvedrift.config.DatabaseConfig
+import com.gruvedrift.plugins.configureStatusPages
 import com.gruvedrift.routes.droidRoutes
 import com.gruvedrift.routes.installRoutes
 import io.ktor.serialization.kotlinx.json.*
@@ -23,4 +24,5 @@ fun Application.module() {
     }
     installRoutes()
     DatabaseConfig.init()
+    configureStatusPages() // global error handler and response plugin
 }

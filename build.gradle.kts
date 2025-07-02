@@ -27,6 +27,7 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jwt")
     implementation("io.ktor:ktor-server-content-negotiation")
     implementation("io.ktor:ktor-serialization-kotlinx-json")
+    implementation("io.ktor:ktor-server-status-pages")
 
     implementation("org.postgresql:postgresql:$postgres_version")
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")

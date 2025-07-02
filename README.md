@@ -52,6 +52,7 @@ Cose to use the DSL
 - try out a try / catch style controller
 - Add another datasource to check that one can, in fact have two datasources in Exposed. 
 - Ephemeral/Disposable Test DB. Used when running tests in application. ( full integration test )
+- Add logging, especially the exceptions and write to log output file. 
 
 ```kotlin
 post {
@@ -76,3 +77,4 @@ post {
 - Ktor handles Serialization through the `ContentNegotiation` plugin. Instead of wrapping the response in
   a `ResponseEntity` class, the http responses
   are created directly through the 
+- StatusPages plugin (Ktor’s global error handler)
