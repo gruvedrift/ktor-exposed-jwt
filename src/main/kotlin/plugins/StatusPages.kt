@@ -11,49 +11,44 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import org.slf4j.LoggerFactory
-import kotlin.reflect.jvm.internal.impl.load.java.structure.JavaClass
 
 private val logger = LoggerFactory.getLogger("StatusPages")
 
 fun Application.configureStatusPages() {
     install(StatusPages) {
         exception<InvalidIdException> { call, cause ->
-            logger.warn(
-                "${cause.message} " +
-                        "(method: ${call.request.httpMethod.value}, uri: ${call.request.uri})"
-            )
-            call.respond(HttpStatusCode.BadRequest, cause.message ?: "Invalid id!")
+            logAndRespond(call = call, cause = cause, loglevel = Loglevel.WARNING, httpStatusCode = HttpStatusCode.BadRequest)
         }
         exception<EntityNotFoundException> { call, cause ->
-            logger.error(
-                "${cause.message}" +
-                        "(method: ${call.request.httpMethod.value}, uri: ${call.request.uri})"
-            )
-            call.respond(HttpStatusCode.NotFound, cause.message ?: "Could not find entity!")
+            logAndRespond(call = call, cause = cause, Loglevel.ERROR, httpStatusCode = HttpStatusCode.NotFound)
         }
         exception<EntityNotCreatedException> { call, cause ->
-            logger.error(
-                "${cause.message}" +
-                        "(method: ${call.request.httpMethod.value}, uri: ${call.request.uri})"
-            )
-            call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Entity creation failed!")
+            logAndRespond(call = call, cause = cause, Loglevel.ERROR, httpStatusCode = HttpStatusCode.InternalServerError)
         }
         exception<EntityNotUpdatedException> { call, cause ->
-            logger.error(
-                "${cause.message}" +
-                        "(method: ${call.request.httpMethod.value}, uri: ${call.request.uri})"
-            )
+            logAndRespond(call = call, cause = cause, Loglevel.ERROR, httpStatusCode = HttpStatusCode.InternalServerError)
         }
         exception<EntityNotDeletedException> { call, cause ->
-            logger.error(
-                "${cause.message}" +
-                        "(method: ${call.request.httpMethod.value}, uri: ${call.request.uri})"
-            )
-
+            logAndRespond(call = call, cause = cause, Loglevel.ERROR, httpStatusCode = HttpStatusCode.InternalServerError)
         }
-        // TODO pull out in helperfunction, too much duplicaet
 
     }
 }
 
+private suspend fun logAndRespond(
+    call: ApplicationCall,
+    cause: RuntimeException,
+    loglevel: Loglevel,
+    httpStatusCode: HttpStatusCode,
+) {
+    val message = "${cause.message}" + "(method: ${call.request.httpMethod.value}, uri: ${call.request.uri})"
+    when (loglevel) {
+        Loglevel.INFO -> logger.info(message)
+        Loglevel.WARNING -> logger.warn(message)
+        Loglevel.ERROR -> logger.error(message)
+    }
+    call.respond(httpStatusCode, cause.message ?: httpStatusCode.description )
+}
+
+enum class Loglevel { INFO, WARNING, ERROR }
 

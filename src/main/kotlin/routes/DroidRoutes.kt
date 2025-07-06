@@ -28,8 +28,8 @@ fun Route.droidRoutes(
 
         post("/create") {
             val request = call.receive<CreateDroidRequest>()
-            val createdDroidId = droidService.createDroid(createDroidRequest = request)
-            call.respond(HttpStatusCode.Created, "Created droid successfully with id: $createdDroidId")
+            val newDroidId = droidService.createDroid(createDroidRequest = request)
+            call.respond(HttpStatusCode.Created, "Created droid successfully with id: $newDroidId")
         }
 
         put("/update-crew") {
