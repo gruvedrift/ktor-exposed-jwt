@@ -25,8 +25,7 @@ class PitCrewRepository {
     fun createPitcrew(createPitCrewRequest: CreatePitCrewRequest): Int = transaction {
         PitCrewTable.insert { statement ->
             statement[crewName] = createPitCrewRequest.crewName
-        }.insertedCount
-        // or } get PitCrewTable.id hvis man vil returnere ID
+        } get PitCrewTable.id
     }
 
     // Returns number of rows affected

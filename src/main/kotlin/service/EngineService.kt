@@ -16,15 +16,15 @@ class EngineService(
     fun getEngineById(id: Int): Engine =
         engineRepository.getEngineById(id = id) ?: throw EntityNotFoundException(domainEntity = ENGINE, id = id)
 
-    fun createEngine(createEngineRequest: CreateEngineRequest): Int? =
+    fun createEngine(createEngineRequest: CreateEngineRequest): Int =
         engineRepository.createEngine(createEngineRequest = createEngineRequest).takeIf { it > 0 }
             ?: throw EntityNotCreatedException(domainEntity = ENGINE)
 
-    fun updateEngineEffect(updateEngineEffectRequest: UpdateEngineEffectRequest): Int? =
+    fun updateEngineEffect(updateEngineEffectRequest: UpdateEngineEffectRequest): Int =
         engineRepository.updateEngineEffect(updateEngineRequest = updateEngineEffectRequest).takeIf { it > 0 }
             ?: throw EntityNotUpdatedException(domainEntity = ENGINE)
 
-    fun deleteEngine(id: Int): Int? =
+    fun deleteEngine(id: Int): Int =
         engineRepository.deleteEngine(id = id).takeIf { it > 0 }
             ?: throw EntityNotDeletedException(domainEntity = ENGINE)
 }
