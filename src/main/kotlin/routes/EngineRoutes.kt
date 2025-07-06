@@ -3,16 +3,24 @@ package com.gruvedrift.routes
 import com.gruvedrift.domain.dto.request.CreateEngineRequest
 import com.gruvedrift.domain.dto.request.UpdateDroidRequest
 import com.gruvedrift.domain.dto.request.UpdateEngineEffectRequest
+import com.gruvedrift.exception.InvalidIdException
 import com.gruvedrift.repository.EngineRepository
+import com.gruvedrift.service.EngineService
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.engineRoutes(
-    engineRepository: EngineRepository
+    engineRepository: EngineRepository,
+    engineService: EngineService
 ) {
     route("/api/engine") {
+        get("{id}")  {
+            val id = call.parameters["id"]?.toIntOrNull() ?: throw InvalidIdException()
+            val droid = engineService.getEngineById(id = id)
+            call.respond(HttpStatusCode.OK, droid)
+        }
 
         get("{id}") {
             val id = call.parameters["id"]?.toIntOrNull()
