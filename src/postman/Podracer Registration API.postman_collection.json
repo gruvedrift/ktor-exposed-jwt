@@ -1,0 +1,41 @@
+{
+  "info": {
+    "name": "Podracer Registration API",
+    "_postman_id": "12345678-90ab-cdef-1234-567890abcdef",
+    "description": "Register a new podracer including engine, droids, pit crew, and pilot.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register Bozzie Baranta",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Bozzie Baranta\",\n  \"species\": \"Polis Massan\",\n  \"homePlanet\": \"Polis Massa\",\n  \"engine\": {\n    \"manufacturer\": \"Arakyd Industries\",\n    \"effectOutput\": 675,\n    \"model\": \"M-TwinX Vortex\"\n  },\n  \"podracer\": {\n    \"model\": \"Arakyd NovaSled\",\n    \"manufacturer\": \"Arakyd Experimental Division\",\n    \"weight\": 1720,\n    \"maxSpeed\": 905,\n    \"engineId\": 0\n  },\n  \"pitCrew\": {\n    \"crewName\": \"Bozzie's Grease Monks\"\n  },\n  \"droids\": [\n    {\n      \"manufacturer\": \"Binary Loadlifters Inc.\",\n      \"price\": 5200,\n      \"pitCrewId\": 0\n    },\n    {\n      \"manufacturer\": \"Industrial Automaton\",\n      \"price\": 6100,\n      \"pitCrewId\": 0\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/racers/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "racers",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
