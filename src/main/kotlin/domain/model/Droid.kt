@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Droid(
     val id: Int,
-    val pitCrewId: Int,
+    val pitCrewId: Int?,
     val manufacturer: String,
     val price: Int,
 )

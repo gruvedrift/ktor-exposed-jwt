@@ -46,7 +46,7 @@ class PilotRepository {
     }
 }
 
-object PilotTable : Table() {
+object PilotTable : Table("pilot") {
     val id = integer("id").autoIncrement()
     val podracerId = integer("podracer_id").references(PodracerTable.id)
     val pitCrewId = integer("pit_crew_id").references(PitCrewTable.id)

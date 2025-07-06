@@ -58,7 +58,7 @@ class PodracerRepository {
     }
 }
 
-object PodracerTable : Table() {
+object PodracerTable : Table("podracer") {
     val id = integer("id").autoIncrement()
     val engineId = integer("engine_id").references(EngineTable.id)
     val model = varchar("model", 512)
