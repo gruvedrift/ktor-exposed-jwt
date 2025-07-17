@@ -45,12 +45,11 @@ If the server starts successfully, you'll see the following output:
 
 ### IDEAS
 
-- Custom serializer / deserializer
 - Add tests
 - Using Exposed: Exposed is a lightweight SQL library on top of a JDBC driver for the Kotlin programming language.
 Cose to use the DSL 
 - try out a try / catch style controller
-- Add another datasource to check that one can, in fact have two datasources in Exposed. 
+- Add another datasource to check that one can, in fact have two datasources in Exposed.  (JWT)
 - Ephemeral/Disposable Test DB. Used when running tests in application. ( full integration test )
 - Add logging, especially the exceptions and write to log output file. 
 

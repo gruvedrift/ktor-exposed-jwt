@@ -14,8 +14,8 @@ object DatabaseConfig {
 
     private lateinit var datasource: HikariDataSource
 
-    fun init() {
-        val configurationParams = ConfigFactory.load().getConfig("database")
+    fun init(environment: String = "database") {
+        val configurationParams = ConfigFactory.load().getConfig(environment)
 
         val hikariConfig = HikariConfig().apply {
             driverClassName = configurationParams.getString("driver")

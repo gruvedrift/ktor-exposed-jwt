@@ -36,8 +36,19 @@ dependencies {
     implementation("org.flywaydb:flyway-core:10.10.0") // newer version for newer PSQL
     implementation("org.flywaydb:flyway-database-postgresql:10.10.0") // needed to actually run the flyway migration
 
-
-
     implementation("io.ktor:ktor-server-netty")
     implementation("ch.qos.logback:logback-classic:$logback_version")
+
+
+    // TESTING
+    testImplementation("io.ktor:ktor-server-test-host")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testImplementation("io.mockk:mockk:1.14.0")
+//    testImplementation("io.mockk.mockk:$mockk_version")
+//    testImplementation("io.ktor:ktor-server-tests")
+//    testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+
+}
+tasks.test{
+    useJUnitPlatform()
 }

@@ -1,14 +1,24 @@
 services:
-  postgres:
+  postgres-dev:
     image: postgres:17.0
-    container_name: podracing_postgres
+    container_name: podracing-postgres-dev
     restart: always
     ports:
       - '5432:5432'
     environment:
-      POSTGRES_DB: podracing-database
-      POSTGRES_USER: admin-local
-      POSTGRES_PASSWORD: pw
+      POSTGRES_DB: podracing-database-dev
+      POSTGRES_USER: dev-user
+      POSTGRES_PASSWORD: dev-pw
 
-volumes:
-  postgres_data:
+  postgres-test:
+    image: postgres:17.0
+    container_name: podracing-postgres-test
+    restart: always
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_DB: podracing-database-test
+      POSTGRES_USER: test-user
+      POSTGRES_PASSWORD: test-pw
+#volumes:
+#  postgres_data:
