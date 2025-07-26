@@ -1,5 +1,6 @@
 package com.gruvedrift.config
 
+import com.gruvedrift.Environment
 import com.typesafe.config.ConfigFactory
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -14,8 +15,8 @@ object DatabaseConfig {
 
     private lateinit var datasource: HikariDataSource
 
-    fun init(environment: String = "database") {
-        val configurationParams = ConfigFactory.load().getConfig(environment)
+    fun init(environment: Environment = Environment.DEV) {
+        val configurationParams = ConfigFactory.load().getConfig(environment.environmentName)
 
         val hikariConfig = HikariConfig().apply {
             driverClassName = configurationParams.getString("driver")

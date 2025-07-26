@@ -23,14 +23,14 @@ fun Route.podracerRoutes(
 
         get("/engine-model/{id}") {
             val id = call.parameters["id"]?.toIntOrNull() ?: throw InvalidIdException()
-            val engineManufacturer = podracerService.getEngineModel(id = id)
-            call.respond(HttpStatusCode.OK, "Engine model: $engineManufacturer")
+            val engineModel = podracerService.getEngineModel(id = id)
+            call.respond(HttpStatusCode.OK, "Engine model: $engineModel")
         }
 
         post("/create") {
             val request = call.receive<CreatePodracerRequest>()
             val createdPodracerId = podracerService.createPodracer(createPodracerRequest = request)
-            call.respond(HttpStatusCode.OK, "Successfully created podracer with id: $createdPodracerId")
+            call.respond(HttpStatusCode.Created, "Successfully created podracer with id: $createdPodracerId")
         }
 
         get("analytics/{id}") {

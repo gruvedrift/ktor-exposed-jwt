@@ -12,7 +12,7 @@ fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }
 
-fun Application.module() {
+fun Application.module(environment: Environment = Environment.DEV) {
     install(ContentNegotiation) {
         json(Json {
                 prettyPrint = true
@@ -21,6 +21,11 @@ fun Application.module() {
         )
     }
     installRoutes()
-    DatabaseConfig.init()
+    DatabaseConfig.init(environment = environment)
     configureStatusPages() // global error handler and response plugin
+}
+
+enum class Environment(val environmentName: String ){
+    DEV("dev-environment"),
+    TEST("test-environment"),
 }
