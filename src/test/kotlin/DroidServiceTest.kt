@@ -1,5 +1,3 @@
-import com.gruvedrift.Environment
-import com.gruvedrift.config.DatabaseConfig
 import com.gruvedrift.domain.dto.request.CreateDroidRequest
 import com.gruvedrift.domain.dto.request.UpdateDroidRequest
 import com.gruvedrift.exception.EntityNotFoundException
@@ -7,23 +5,18 @@ import com.gruvedrift.repository.DroidRepository
 import com.gruvedrift.service.DroidService
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertThrows
+import utils.BaseTestConfiguration
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-// Single instance of the test class allows for non-static use of @BeforeAll
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class DroidServiceTest {
+class DroidServiceTest: BaseTestConfiguration() {
 
     private lateinit var droidService: DroidService
 
     @BeforeAll
-    fun setup() {
-        DatabaseConfig.init(environment = Environment.TEST)
-        droidService = DroidService(DroidRepository())
-    }
+    fun setup() { droidService = DroidService(DroidRepository()) }
 
     @Test
     fun `getDroidById returns expected droid`() {

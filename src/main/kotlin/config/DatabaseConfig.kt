@@ -13,21 +13,23 @@ import java.sql.Connection
  */
 object DatabaseConfig {
 
-    private lateinit var datasource: HikariDataSource
+    private var datasource: HikariDataSource? = null
 
     fun init(environment: Environment = Environment.DEV) {
-        val configurationParams = ConfigFactory.load().getConfig(environment.environmentName)
+        if (datasource == null) {
 
-        val hikariConfig = HikariConfig().apply {
-            driverClassName = configurationParams.getString("driver")
-            jdbcUrl = configurationParams.getString("url")
-            username = configurationParams.getString("username")
-            password = configurationParams.getString("password")
-            maximumPoolSize = 10
+            val configurationParams = ConfigFactory.load().getConfig(environment.environmentName)
 
+            val hikariConfig = HikariConfig().apply {
+                driverClassName = configurationParams.getString("driver")
+                jdbcUrl = configurationParams.getString("url")
+                username = configurationParams.getString("username")
+                password = configurationParams.getString("password")
+                maximumPoolSize = 10
+
+            }
+            datasource = HikariDataSource(hikariConfig)
         }
-
-        datasource = HikariDataSource(hikariConfig)
 
         Flyway.configure()
             .dataSource(datasource)
@@ -35,10 +37,15 @@ object DatabaseConfig {
             .load()
             .migrate()
 
-        Database.connect(datasource)
+        datasource?.let { Database.connect(it) }
+            ?: throw IllegalStateException("Datasource initialization failed!")
+    }
+
+    fun close() {
+        datasource?.close()
+        datasource = null
     }
 }
-
 
 /**
  * Unlike Spring Boot, where a datasource if often injected or wired explicitly to a repository class,

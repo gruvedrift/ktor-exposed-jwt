@@ -15,8 +15,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import kotlin.test.assertEquals
 import org.junit.jupiter.api.assertAll
+import utils.BaseTestConfiguration
 
-/*
+/**
 *  This is one way to set up test in KTOR.
 *  Each test spins up a fresh testApplication {} block per test.
 * Why?
@@ -25,7 +26,7 @@ import org.junit.jupiter.api.assertAll
 *   - testApplication {} spins up an internal test engine that is lightweight and fast, so not much overhead.
 * */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class PodracerIntegrationTest {
+class PodracerIntegrationTest: BaseTestConfiguration() {
 
     @Test
     fun `get podracer by ID - success`() = testApplication {
@@ -105,5 +106,3 @@ class PodracerIntegrationTest {
         assertTrue(deleteResponse.bodyAsText().contains("Successfully deleted podracer with id: $id"))
     }
 }
-
-
