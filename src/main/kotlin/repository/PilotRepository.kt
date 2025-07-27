@@ -55,16 +55,6 @@ object PilotTable : Table("pilot") {
     val homePlanet = varchar("home_planet", 512)
 }
 
-/**
- * "this" is a ResultRow. It stores data as a map of key - value pairs.
- * mapof(
- *  PilotTable. Id = 1
- *  PilotTable.podracerId = 6
- *  ...
- *  )
- *  when we say: pitCrewid = this[PilotTable.pitCrewId] we are really just doing syntactic sugar for :
- *  resultRow.get(PilotTable.pitCrewId)
- **/
 private fun ResultRow.toPilot(): Pilot = Pilot(
     id = this[PilotTable.id],
     podracerId = this[PilotTable.podracerId],

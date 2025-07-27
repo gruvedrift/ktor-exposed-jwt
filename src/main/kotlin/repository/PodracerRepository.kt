@@ -14,6 +14,10 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 class PodracerRepository {
 
+    /**
+     * Each function runs in its own database transaction context.
+     * `transaction {}` is provided by Exposed, and guarantees safe and consistent access.
+     */
     fun getById(id: Int): Podracer? = transaction {
         PodracerTable
             .selectAll()
@@ -50,7 +54,7 @@ class PodracerRepository {
         (PodracerTable
             .innerJoin(EngineTable, { PodracerTable.engineId }, { EngineTable.id })
             .innerJoin(PilotTable, { PodracerTable.id }, { PilotTable.podracerId })
-        )
+                )
             .selectAll()
             .where(PodracerTable.engineId eq id)
             .map { it.toPodracerAnalyticsCoreData() }
@@ -58,6 +62,7 @@ class PodracerRepository {
     }
 }
 
+// Singleton object for mapping between domain objects to database objects. It is a base class for any DB table.
 object PodracerTable : Table("podracer") {
     val id = integer("id").autoIncrement()
     val engineId = integer("engine_id").references(EngineTable.id)
@@ -69,7 +74,26 @@ object PodracerTable : Table("podracer") {
     override val primaryKey = PrimaryKey(id)
 }
 
-// When you use this[PodracerTable.id] we are using what is called an indexing operator, it is syntactic sugar for get(whatever)
+/**
+ * Extension function to map a raw ResultRow (from Exposed) into a domain model (Podracer).
+ * Indexing operator `this[Table.column]` is syntactic sugar for ResultRow.get(Column).
+ *
+ * `this` refers to a ResultRow — essentially a row returned from a SQL query.
+ * Internally, a ResultRow stores values in a map-like structure, associating table columns with their values.
+ *
+ * Example:
+ *   mapOf(
+ *     PodracerTable.id to 1,
+ *     PodracerTable.engineId to 4,
+ *     PodracerTable.model to "Plug-F Mammoth Split-X",
+ *     ...
+ *   )
+ *
+ * So when you write: val pitCrewId = this[PilotTable.pitCrewId]
+ * we are really doing: val engineId = resultRow.get(PodracerTable.engineId)
+ *
+ * The indexing operator (`[]`) is just syntactic sugar for `.get()`.
+ */
 private fun ResultRow.toPodracer(): Podracer = Podracer(
     id = this[PodracerTable.id],
     engineId = this[PodracerTable.engineId],
@@ -86,8 +110,10 @@ private fun ResultRow.toPodracerAnalyticsCoreData(): PodracerAnalyticsCoreData =
     pilotName = this[PilotTable.name]
 )
 
-// It is also possible to do take the ResultRow as an argument.
-// Can then call .map(::toCoreData). This is called a function reference.
+/**
+ * Function reference syntax (e.g., .map(::toCoreData)) is an alternative to using lambdas.
+ * Improves readability and reuse when mapping from ResultRow to domain types.
+ */
 private fun toCoreData(row: ResultRow): PodracerAnalyticsCoreData = PodracerAnalyticsCoreData(
     weight = row[PodracerTable.weight],
     maxSpeed = row[PodracerTable.maxSpeed],

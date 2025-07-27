@@ -28,14 +28,12 @@ class PitCrewRepository {
         } get PitCrewTable.id
     }
 
-    // Returns number of rows affected
     fun updatePitCrew(updatePitCrewRequest: UpdatePitCrewRequest): Int = transaction {
         PitCrewTable.update(
             { PitCrewTable.id eq updatePitCrewRequest.id }
         ) { statement -> statement[crewName] = updatePitCrewRequest.crewName }
     }
 
-    // deletes references ( sets null )
     fun deletePitcrew(id: Int): Int = transaction {
         PitCrewTable.deleteWhere {
             PitCrewTable.id eq id

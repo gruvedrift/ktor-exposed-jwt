@@ -22,12 +22,6 @@ class EngineRepository {
             .singleOrNull()
     }
 
-    /**
-     *  [] Is syntactic sugar for the method that registers the column and value pair for the insert.
-     *  statement[manufacturer] = request.manufacturer is the same as
-     *  statement.set(manufacturer, request.manufacturer)
-     *  "Hey, when you build the SQL insert, assign this value to this column."
-     * */
     fun createEngine(createEngineRequest: CreateEngineRequest): Int = transaction {
         EngineTable.insert { stm ->
             stm[manufacturer] = createEngineRequest.manufacturer
@@ -69,21 +63,6 @@ object EngineTable : Table("engine") {
 
     override val primaryKey = PrimaryKey(id)
 }
-
-/**
- * How this works:
- * "this" is a ResultRow.
- * ResultRow is a map : Map<Expression, Any?>
- *  mapOf(
- *      EngineTable.id to 1
- *      EngineTable.manufacturer to "Corellian"
- *      ....
- * )
- * So the line id = this[EngineTable.id] means resultRow.get(EngineTable.id)
- *
- * "Hey ResultRow, give me the value that corresponds to the column EngineTable.id."
- *
- * */
 
 private fun ResultRow.toEngine(): Engine = Engine(
     id = this[EngineTable.id],

@@ -1,5 +1,12 @@
 package com.gruvedrift.exception
 
+/**
+ * Domain-specific exceptions to represent expected application errors.
+ *
+ * These are used in the `StatusPages` configuration to convert application-level errors
+ * into meaningful HTTP responses with proper status codes and logs.
+ */
+
 class InvalidIdException(message: String = "Missing or invalid id!") : RuntimeException(message)
 
 class EntityNotFoundException(

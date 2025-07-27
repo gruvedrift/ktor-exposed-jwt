@@ -20,5 +20,3 @@ services:
       POSTGRES_DB: podracing-database-test
       POSTGRES_USER: test-user
       POSTGRES_PASSWORD: test-pw
-#volumes:
-#  postgres_data:

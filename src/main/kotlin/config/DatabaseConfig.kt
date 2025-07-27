@@ -9,12 +9,27 @@ import org.jetbrains.exposed.sql.Database
 import java.sql.Connection
 
 /**
- *  Want to use object since it is a singleton in Kotlin.
+ * DatabaseConfig is declared as an `object`, making it a thread-safe singleton in Kotlin.
+ * This ensures the database is configured only once per application lifecycle.
+ *
+ * Unlike Spring Boot, which typically injects a DataSource into each repository,
+ * Ktor with Exposed uses a globally configured connection via `Database.connect()`.
+ *
+ * After initialization, the `Exposed` ORM automatically uses this connection in every `transaction {}` block.
+ *
+ * This design avoids common pitfalls found in Spring-based applications, such as failed @Transactional rollbacks
+ * or configuration complexity when working with multiple data sources.
+ *
+ * Flyway is used to run migrations automatically on startup.
  */
 object DatabaseConfig {
 
     private var datasource: HikariDataSource? = null
 
+    /**
+     * Initializes the database connection pool using HikariCP and configuration
+     * based on the active environment (e.g., dev or test).
+     */
     fun init(environment: Environment = Environment.DEV) {
         if (datasource == null) {
 
@@ -31,28 +46,23 @@ object DatabaseConfig {
             datasource = HikariDataSource(hikariConfig)
         }
 
+        // Run Flyway DB migrations
         Flyway.configure()
             .dataSource(datasource)
             .locations("classpath:db/migration")
             .load()
             .migrate()
 
+        // Connect to Exposed global DB connection
         datasource?.let { Database.connect(it) }
             ?: throw IllegalStateException("Datasource initialization failed!")
     }
 
+    /**
+     * Properly close the datasource and clean up resources (e.g., between tests).
+     */
     fun close() {
         datasource?.close()
         datasource = null
     }
 }
-
-/**
- * Unlike Spring Boot, where a datasource if often injected or wired explicitly to a repository class,
- * MyRepository( private val namedParameterJdbcTemplate: NamedParameterJdbcTemplate ) {
- *  // do logic on the jdbcTemplate like .query() and .update()
- * }
- * Exposed manages a Global Database Connection pool. Configured once, and used implicitly in every transaction {}
- * That means that one does not have to use the @Transactional on functions that often are misconfigured or does not work
- * when failing transactions are cross-application.
- * */

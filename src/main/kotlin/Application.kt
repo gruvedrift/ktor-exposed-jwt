@@ -22,7 +22,7 @@ fun Application.module(environment: Environment = Environment.DEV) {
     }
     installRoutes()
     DatabaseConfig.init(environment = environment)
-    configureStatusPages() // global error handler and response plugin
+    configureStatusPages()
 }
 
 enum class Environment(val environmentName: String ){

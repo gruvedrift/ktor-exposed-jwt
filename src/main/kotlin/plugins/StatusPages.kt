@@ -12,8 +12,15 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import org.slf4j.LoggerFactory
 
-private val logger = LoggerFactory.getLogger("StatusPages")
-
+/**
+ * Centralized error handling using Ktor’s `StatusPages` plugin.
+ *
+ * - Maps specific custom exceptions to HTTP status codes.
+ * - Ensures that all domain errors return consistent response format & logs.
+ *
+ * This approach avoids cluttering controller logic with `try-catch` blocks
+ * and separates infrastructure concerns (error handling/logging) from business logic.
+ */
 fun Application.configureStatusPages() {
     install(StatusPages) {
         exception<InvalidIdException> { call, cause ->
@@ -35,6 +42,11 @@ fun Application.configureStatusPages() {
     }
 }
 
+private val logger = LoggerFactory.getLogger("StatusPages")
+/**
+ * Helper function that logs the exception based on severity,
+ * and sends a clean HTTP response to the client.
+ */
 private suspend fun logAndRespond(
     call: ApplicationCall,
     cause: RuntimeException,

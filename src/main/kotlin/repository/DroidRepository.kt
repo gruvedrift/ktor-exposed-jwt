@@ -44,8 +44,7 @@ class DroidRepository {
      *  update takes in two lambdas:
      *  First -> where clause  ( predicate )
      *  Second -> update body
-     * */
-
+     */
     fun updateCrewId(updateDroidRequest: UpdateDroidRequest): Int = transaction {
         DroidTable.update(
             { DroidTable.id eq updateDroidRequest.droidId }
@@ -54,9 +53,7 @@ class DroidRepository {
         }
     }
 
-    /**
-     *  Only takes in one lambda -> where clause ( predicate ) so no need to wrap with ( )
-     * */
+    // Only takes in one lambda -> where clause ( predicate ) so no need to wrap with ( )
     fun deleteDroid(id: Int): Int = transaction {
         DroidTable.deleteWhere {
             DroidTable.id eq id
@@ -74,7 +71,6 @@ class DroidRepository {
     }
 }
 
-// singleton object for mapping between domain objects to database objects. It is a base class for any DB table.
 object DroidTable : Table("droid") {
     val id = integer("id").autoIncrement()
     val pitCrewId = integer("pit_crew_id").references(PitCrewTable.id)
@@ -91,7 +87,6 @@ fun ResultSet.toDroid(): Droid = Droid(
     price = this.getInt("price")
 )
 
-// Used for Exposed DSL, as it returns a ResultRow
 private fun ResultRow.toDroid(): Droid = Droid(
     id = this[DroidTable.id],
     pitCrewId = this[DroidTable.pitCrewId],
