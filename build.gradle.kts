@@ -28,8 +28,11 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation")
     implementation("io.ktor:ktor-client-content-negotiation")
     implementation("io.ktor:ktor-serialization-kotlinx-json")
+    implementation("io.ktor:ktor-server-netty")
+    implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.ktor:ktor-server-status-pages")
 
+    // DATABASE
     implementation("org.postgresql:postgresql:$postgres_version")
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
@@ -37,8 +40,6 @@ dependencies {
     implementation("org.flywaydb:flyway-core:10.10.0") // newer version for newer PSQL
     implementation("org.flywaydb:flyway-database-postgresql:10.10.0") // needed to actually run the flyway migration
 
-    implementation("io.ktor:ktor-server-netty")
-    implementation("ch.qos.logback:logback-classic:$logback_version")
 
     // TESTING
     testImplementation("io.ktor:ktor-server-test-host")

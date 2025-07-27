@@ -8,6 +8,15 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
 import kotlinx.serialization.json.Json
 
+/**
+ * This is the primary entry point for configuring the Ktor application.
+ * It is referenced by the server engine (Netty) when the application starts.
+ *
+ * Key responsibilities:
+ * - Install Ktor plugins like `ContentNegotiation` for JSON support.
+ * - Initialize application-wide components like database connection and routes.
+ * - Inject environment-specific configuration (e.g., DEV vs TEST).
+ */
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
 }

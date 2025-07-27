@@ -7,37 +7,57 @@
 - JDK 21
 - Gradle
 
+### Running the Application
+
+To start the application with its dependencies (PostgreSQL database), use the provided script:
+
+```bash
+./up.sh
+```
+
+This script will:
+
+1. Attempt to use Docker Compose to spin up the PostgreSQL container.
+2. If Docker is not available, it will fall back to Podman Compose (for systems using Podman).
+3. Start the Ktor application once the database is ready.
+
+To stop and clean up containers, use:
+
+```bash
+./down.sh
+```
+
+### Running the tests
+
+To run unit and integration tests in an isolated environment:
+
+```bash
+./test.sh
+```
+
+This script will:
+
+1. Start a disposable PostgreSQL test container.
+2. Apply database migrations.
+3. Run all test suites (unit + integration).
+4. Clean up the container and test resources after execution.
+
 ### Technologies / patterns used
 
-| Tool               | Purpose                                                   |
-|--------------------|-----------------------------------------------------------|
-| HikariCP           | Lightweight, high-performance connection pool             |
-| Flyway             | Database version control and migrations                   |
-| Exposed            | Type-safe SQL DSL and DAO support in Kotlin               |
-| Typesafe Config    | Easy access to environment-specific settings              |
-| Ktor `StatusPages` | Intercepts thrown exceptions and returns custom responses |
-| Custom Exceptions  | Used for clearer domain-level error semantics             |
-
-## Building & Running application / tests:
-
-- **Application**: Use the `up.sh` script to start the PostgreSQL database and launch the application.
-  The script first tries Docker Compose. If unavailable, it falls back to Podman Compose. Use the `down.sh` to tear down
-  the running containers.
-- **Tests**: Use the `test.sh` script. It starts a fresh test container with test data to run both unit and integration
-  tests against. The script will clean up resources after the tests are run.
-
-## Features
-
-- Ephemeral/Disposable Test DB. Used when running tests in application.
-
-Here's a list of features included in this project:
-
-| Name                                                                   | Description                                                                        |
+| Tool                                                                   | Purpose                                                                            |
 |------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| [Ktor](https://ktor.io)                                                | Kotlin-based web framework                                                         |
+| [Flyway](https://flywaydb.org/)                                        | Database version control and migrations                                            |
+| [Exposed](https://github.com/JetBrains/Exposed))                       | Type-safe SQL DSL and DAO support in Kotlin                                        |
+| [Status pages](https://ktor.io/docs/server-status-pages.html)          | Intercepts thrown exceptions and returns custom responses                          |
 | [Routing](https://start.ktor.io/p/routing)                             | Provides a structured routing DSL                                                  |
 | [Content Negotiation](https://start.ktor.io/p/content-negotiation)     | Provides automatic content conversion according to Content-Type and Accept headers |
 | [kotlinx.serialization](https://start.ktor.io/p/kotlinx-serialization) | Handles JSON serialization using kotlinx.serialization library                     |
-| [Postgres](https://start.ktor.io/p/postgres)                           | Adds Postgres database to your application                                         |
+| [PostgreSQL](https://www.postgresql.org/)                              | Relational database                                                                |
+| [Docker Compose](https://docs.docker.com/compose/)                     | Container orchestration for dev and test environment                               |
+| Custom Exceptions                                                      | Used for clearer domain-level error semantics                                      |
+| HikariCP                                                               | Lightweight, high-performance connection pool                                      |
+| Typesafe Config                                                        | Easy access to environment-specific settings                                       |
 
 ### IDEAS
 
@@ -45,23 +65,17 @@ Here's a list of features included in this project:
   Cose to use the DSL
 - Add another datasource to check that one can, in fact have two datasources in Exposed.  (JWT)
 
-| Component                                                                | Description                                 |
-|--------------------------------------------------------------------------|---------------------------------------------|
-| [Ktor](https://ktor.io)                                                  | Kotlin-based web framework                  |
-| [Exposed](https://github.com/JetBrains/Exposed)                          | SQL DSL for database access                 |
-| [PostgreSQL](https://www.postgresql.org/)                                | Relational database                         |
-| [Flyway](https://flywaydb.org/)                                          | Schema migration tool                       |
-| [Testcontainers](https://www.testcontainers.org/)                        | Launches disposable containers for testing  |
-| [Docker Compose](https://docs.docker.com/compose/)                       | Container orchestration for dev environment |
-| [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization) | JSON serialization                          |
 
-### Differences from spring boot:
+### Ktor vs Spring Boot – Key Differences in This Project
 
-- Ktor ( without dependency injection ) does not rely on annotations like `@Controller` `@Bean` etc. It follows a
-  declarative and compositional style,
-  where we explicitly register features like routing by extending the Application
-  function (`Application.installRoutes()`).
-- Ktor handles Serialization through the `ContentNegotiation` plugin. Instead of wrapping the response in
-  a `ResponseEntity` class, the http responses
-  are created directly through the
-- StatusPages plugin (Ktor’s global error handler)
+In this project, Ktor is used without a DI framework, emphasizing explicit wiring and compositional style.
+
+| Feature                     | Ktor                                         | Spring Boot                           |
+|-----------------------------|----------------------------------------------|---------------------------------------|
+| **Routing**                 | Declarative DSL (`route {}` blocks)          | Annotations (`@RestController`)       |
+| **Dependency Injection**    | Manual (or via Koin/Dagger if added)         | Built-in (Spring Context)             |
+| **Serialization**           | `ContentNegotiation + kotlinx.serialization` | `@RequestBody` / Jackson/Gson         |
+| **Error Handling**          | `StatusPages`                                | `@ControllerAdvice`, `ResponseEntity` |
+| **DB Integration**          | Exposed DSL                                  | Spring Data JPA / JDBC                |
+| **Startup & Configuration** | `fun Application.module()` explicitly        | `@SpringBootApplication` auto-setup   |
+

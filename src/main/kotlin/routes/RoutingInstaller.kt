@@ -14,6 +14,12 @@ import com.gruvedrift.service.RacerRegistrationService
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
+/**
+ * Registers all route groups in the application by delegating to individual route builders.
+ * Although this is not an "Application Plugin" per se (like `ContentNegotiation` or `StatusPages`),
+ * it is functionally similar in the sense that it extends the Application and encapsulates
+ * a modular feature.
+ */
 private val droidRepository = DroidRepository()
 private val engineRepository = EngineRepository()
 private val pilotRepository = PilotRepository()

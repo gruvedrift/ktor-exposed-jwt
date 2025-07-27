@@ -12,7 +12,6 @@ import io.ktor.server.routing.*
 fun Route.pilotRoutes(
     pilotService: PilotService
 ) {
-
     route("/api/pilot") {
 
         get("/{id}") {

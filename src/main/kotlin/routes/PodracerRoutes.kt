@@ -2,13 +2,18 @@ package com.gruvedrift.routes
 
 import com.gruvedrift.domain.dto.request.CreatePodracerRequest
 import com.gruvedrift.exception.InvalidIdException
-import com.gruvedrift.repository.PodracerRepository
 import com.gruvedrift.service.PodracerService
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
+/**
+ * Defines the routes related to Droid operations.
+ *
+ * Unlike Spring Boot where controllers are typically annotated (@RestController, @GetMapping),
+ * Ktor uses a type-safe DSL with the `Route` receiver.
+ */
 fun Route.podracerRoutes(
     podracerService: PodracerService
 ) {
