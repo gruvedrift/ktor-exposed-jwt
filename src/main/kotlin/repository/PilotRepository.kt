@@ -3,6 +3,7 @@ package com.gruvedrift.repository
 import com.gruvedrift.domain.dto.request.CreatePilotRequest
 import com.gruvedrift.domain.dto.request.UpdatePilotPodracerRequest
 import com.gruvedrift.domain.model.Pilot
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
@@ -12,9 +13,11 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 
-class PilotRepository {
+class PilotRepository (
+    private val podracingDb: Database
+){
 
-    fun getPilotById(id: Int): Pilot? = transaction {
+    fun getPilotById(id: Int): Pilot? = transaction(podracingDb) {
         PilotTable
             .selectAll()
             .where { PilotTable.id eq id }
@@ -22,7 +25,7 @@ class PilotRepository {
             .singleOrNull()
     }
 
-    fun createPilot(createPilotRequest: CreatePilotRequest): Int = transaction {
+    fun createPilot(createPilotRequest: CreatePilotRequest): Int = transaction(podracingDb) {
         PilotTable.insert { stm ->
             stm[podracerId] = createPilotRequest.podracerId
             stm[pitCrewId] = createPilotRequest.pitCrewId
@@ -32,14 +35,14 @@ class PilotRepository {
         } get PilotTable.id
     }
 
-    fun updatePilotPodracer(updatePilotPodracerRequest: UpdatePilotPodracerRequest): Int = transaction {
+    fun updatePilotPodracer(updatePilotPodracerRequest: UpdatePilotPodracerRequest): Int = transaction(podracingDb) {
         PilotTable.update(
             { PilotTable.id eq updatePilotPodracerRequest.pilotId }
         ) { stm -> stm[podracerId] = updatePilotPodracerRequest.podracerId }
     }
 
 
-    fun deletePilotById(id: Int): Int = transaction {
+    fun deletePilotById(id: Int): Int = transaction(podracingDb) {
         PilotTable.deleteWhere {
             PilotTable.id eq id
         }

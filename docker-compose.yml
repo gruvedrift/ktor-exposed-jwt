@@ -7,8 +7,8 @@ services:
       - '5432:5432'
     environment:
       POSTGRES_DB: podracing-database-dev
-      POSTGRES_USER: dev-user
-      POSTGRES_PASSWORD: dev-pw
+      POSTGRES_USER: podracing-user-dev
+      POSTGRES_PASSWORD: podracing-pw-dev
 
   podracing-test:
     image: postgres:17.0
@@ -18,8 +18,8 @@ services:
       - '5433:5432'
     environment:
       POSTGRES_DB: podracing-database-test
-      POSTGRES_USER: test-user
-      POSTGRES_PASSWORD: test-pw
+      POSTGRES_USER: podracing-user-test
+      POSTGRES_PASSWORD: podracing-pw-test
 
   auth-dev:
     image: postgres:17.0
@@ -28,6 +28,17 @@ services:
     ports:
       - '5434:5432'
     environment:
-      POSTGRES_DB: auth-database
-      POSTGRES_USER: auth-user
-      POSTGRES_PASSWORD: auth-pw
+      POSTGRES_DB: auth-database-dev
+      POSTGRES_USER: auth-user-dev
+      POSTGRES_PASSWORD: auth-pw-dev
+
+  auth-test:
+    image: postgres:17.0
+    container_name: auth-postgres-test
+    restart: always
+    ports:
+      - '5435:5432'
+    environment:
+      POSTGRES_DB: auth-database-test
+      POSTGRES_USER: auth-user-test
+      POSTGRES_PASSWORD: auth-pw-test

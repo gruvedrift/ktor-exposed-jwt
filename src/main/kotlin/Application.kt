@@ -1,9 +1,9 @@
 package com.gruvedrift
 
-import com.gruvedrift.config.AuthDatabaseConfig
-import com.gruvedrift.config.DatabaseConfig
+import com.gruvedrift.config.initDatabase
 import com.gruvedrift.plugins.configureStatusPages
 import com.gruvedrift.routes.installRoutes
+import com.typesafe.config.ConfigFactory
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
@@ -25,18 +25,27 @@ fun main(args: Array<String>) {
 fun Application.module(environment: Environment = Environment.DEV) {
     install(ContentNegotiation) {
         json(Json {
-                prettyPrint = true
-                isLenient = true
+            prettyPrint = true
+            isLenient = true
             }
         )
     }
-    installRoutes()
-    DatabaseConfig.init(environment = environment)
-    AuthDatabaseConfig.init() // TODO environment here as well ?
+
+    val config = ConfigFactory.load().getConfig(environment.configKey)
+
+    val podracingDb = initDatabase(
+        dbConfig = config.getConfig("podracing"),
+        migrationLocation = "classpath:db/migration"
+    )
+    val authDb = initDatabase(
+        dbConfig = config.getConfig("auth"),
+        migrationLocation = "classpath:db/migration-auth"
+    )
+    installRoutes(podracingDb.database,authDb.database)
     configureStatusPages()
 }
 
-enum class Environment(val environmentName: String ){
+enum class Environment(val configKey: String) {
     DEV("dev-environment"),
     TEST("test-environment"),
 }

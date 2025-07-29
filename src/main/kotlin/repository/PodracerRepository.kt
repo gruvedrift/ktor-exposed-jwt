@@ -3,6 +3,7 @@ package com.gruvedrift.repository
 import com.gruvedrift.domain.dto.request.CreatePodracerRequest
 import com.gruvedrift.domain.dto.response.PodracerAnalyticsCoreData
 import com.gruvedrift.domain.model.Podracer
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
@@ -12,13 +13,15 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class PodracerRepository {
+class PodracerRepository(
+    private val podracingDb: Database
+){
 
     /**
      * Each function runs in its own database transaction context.
      * `transaction {}` is provided by Exposed, and guarantees safe and consistent access.
      */
-    fun getById(id: Int): Podracer? = transaction {
+    fun getById(id: Int): Podracer? = transaction(podracingDb) {
         PodracerTable
             .selectAll()
             .where(PodracerTable.id eq id)
@@ -26,7 +29,7 @@ class PodracerRepository {
             .singleOrNull()
     }
 
-    fun getEngineModel(podracerId: Int): String? = transaction {
+    fun getEngineModel(podracerId: Int): String? = transaction(podracingDb) {
         (PodracerTable innerJoin EngineTable)
             .selectAll()
             .where(PodracerTable.id eq podracerId)
@@ -34,7 +37,7 @@ class PodracerRepository {
             .singleOrNull()
     }
 
-    fun createPodracer(createPodracerRequest: CreatePodracerRequest): Int = transaction {
+    fun createPodracer(createPodracerRequest: CreatePodracerRequest): Int = transaction(podracingDb) {
         PodracerTable.insert { stm ->
             stm[engineId] = createPodracerRequest.engineId
             stm[model] = createPodracerRequest.model
@@ -44,13 +47,13 @@ class PodracerRepository {
         } get PodracerTable.id
     }
 
-    fun deletePodracer(id: Int): Int = transaction {
+    fun deletePodracer(id: Int): Int = transaction(podracingDb) {
         PodracerTable.deleteWhere {
             PodracerTable.id eq id
         }
     }
 
-    fun getAnalyticsCoreData(id: Int): PodracerAnalyticsCoreData? = transaction {
+    fun getAnalyticsCoreData(id: Int): PodracerAnalyticsCoreData? = transaction(podracingDb) {
         (PodracerTable
             .innerJoin(EngineTable, { PodracerTable.engineId }, { EngineTable.id })
             .innerJoin(PilotTable, { PodracerTable.id }, { PilotTable.podracerId })

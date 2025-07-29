@@ -3,6 +3,7 @@ package com.gruvedrift.repository
 import com.gruvedrift.domain.dto.request.CreateEngineRequest
 import com.gruvedrift.domain.dto.request.UpdateEngineEffectRequest
 import com.gruvedrift.domain.model.Engine
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
@@ -12,9 +13,11 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 
-class EngineRepository {
+class EngineRepository(
+    private val podracingDb: Database
+){
 
-    fun getEngineById(id: Int): Engine? = transaction {
+    fun getEngineById(id: Int): Engine? = transaction(podracingDb) {
         EngineTable
             .selectAll()
             .where { EngineTable.id eq id }
@@ -22,7 +25,7 @@ class EngineRepository {
             .singleOrNull()
     }
 
-    fun createEngine(createEngineRequest: CreateEngineRequest): Int = transaction {
+    fun createEngine(createEngineRequest: CreateEngineRequest): Int = transaction(podracingDb){
         EngineTable.insert { stm ->
             stm[manufacturer] = createEngineRequest.manufacturer
             stm[effectOutput] = createEngineRequest.effectOutput
@@ -30,7 +33,7 @@ class EngineRepository {
         } get EngineTable.id
     }
 
-    fun updateEngineEffect(updateEngineRequest: UpdateEngineEffectRequest): Int = transaction {
+    fun updateEngineEffect(updateEngineRequest: UpdateEngineEffectRequest): Int = transaction(podracingDb) {
         EngineTable.update(
             { EngineTable.id eq updateEngineRequest.id }
         ) { stm ->
@@ -39,7 +42,7 @@ class EngineRepository {
     }
 
     // Only for reference without trailing lambda
-    fun updateEngineEffectExplicit(updateEngineRequest: UpdateEngineEffectRequest): Int = transaction {
+    fun updateEngineEffectExplicit(updateEngineRequest: UpdateEngineEffectRequest): Int = transaction(podracingDb) {
         EngineTable.update(
             where = { EngineTable.id eq updateEngineRequest.id },
             limit = null,
@@ -48,7 +51,7 @@ class EngineRepository {
     }
 
     // deleteWhere only takes in a single lambda, so can just write it out as it stands, no need to wrap it
-    fun deleteEngine(id: Int): Int = transaction {
+    fun deleteEngine(id: Int): Int = transaction(podracingDb) {
         EngineTable.deleteWhere {
             EngineTable.id eq id
         }

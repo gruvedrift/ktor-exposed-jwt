@@ -2,31 +2,34 @@
 
 set -e
 
-SERVICE_NAME="postgres-test"
+# Refers to services in docker-compose.yml file
+TEST_SERVICES=("podracing-test" "auth-test")
 USED_TOOL=""
 
 cleanup(){
   echo "🧹 Cleaning up containers..."
-  if [[ "$USED_TOOL" == "docker" ]]; then
-    docker-compose stop $SERVICE_NAME
-    docker-compose rm -f $SERVICE_NAME
-  elif [[ "$USED_TOOL" == "podman" ]]; then
-      podman compose stop $SERVICE_NAME
-      podman compose rm -f $SERVICE_NAME
-  else
-    echo "⚠️  No container tool recorded for cleanup."
-  fi
+  for SERVICE in "${TEST_SERVICES[@]}"; do
+    if [[ "$USED_TOOL" == "docker" ]]; then
+      docker-compose stop $SERVICE
+      docker-compose rm -f $SERVICE
+    elif [[ "$USED_TOOL" == "podman" ]]; then
+        podman compose stop $SERVICE
+        podman compose rm -f $SERVICE
+    else
+      echo "⚠️  No container tool recorded for cleanup."
+    fi
+  done
 }
 
 # Clean up, no matter what.
 trap cleanup EXIT
 
-if docker-compose up $SERVICE_NAME -d; then
+if docker-compose up -d "${TEST_SERVICES[@]}"; then
   echo "✅  Started containers with Docker Compose."
   USED_TOOL="docker"
   else
     echo "⚠️ Docker Compose failed. Trying with Podman Compose ..."
-    if podman compose up $SERVICE_NAME -d; then
+    if podman compose up -d "${TEST_SERVICES[@]}"; then
       echo "✅  Started containers with Podman Compose."
       USED_TOOL="podman"
     else

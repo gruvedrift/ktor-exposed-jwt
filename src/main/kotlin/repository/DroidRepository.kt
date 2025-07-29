@@ -3,6 +3,7 @@ package com.gruvedrift.repository
 import com.gruvedrift.domain.dto.request.CreateDroidRequest
 import com.gruvedrift.domain.dto.request.UpdateDroidRequest
 import com.gruvedrift.domain.model.Droid
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
@@ -13,9 +14,11 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import java.sql.ResultSet
 
-class DroidRepository {
+class DroidRepository(
+    private val podracingDb: Database
+) {
 
-    fun getDroidById(id: Int): Droid? = transaction {
+    fun getDroidById(id: Int): Droid? = transaction(podracingDb) {
         DroidTable
             .selectAll()
             .where { DroidTable.id eq id }
@@ -23,8 +26,7 @@ class DroidRepository {
             .singleOrNull()
     }
 
-
-    fun createDroid(createDroidRequest: CreateDroidRequest) : Int = transaction {
+    fun createDroid(createDroidRequest: CreateDroidRequest): Int = transaction(podracingDb) {
         DroidTable.insert { stm ->
             stm[pitCrewId] = createDroidRequest.pitCrewId
             stm[manufacturer] = createDroidRequest.manufacturer
@@ -32,8 +34,7 @@ class DroidRepository {
         } get DroidTable.id
     }
 
-
-    fun getAllByPilotId(pilotId: Int): List<Droid> = transaction {
+    fun getAllByPilotId(pilotId: Int): List<Droid> = transaction(podracingDb) {
         DroidTable
             .selectAll()
             .where { DroidTable.pitCrewId eq pilotId }
@@ -45,7 +46,7 @@ class DroidRepository {
      *  First -> where clause  ( predicate )
      *  Second -> update body
      */
-    fun updateCrewId(updateDroidRequest: UpdateDroidRequest): Int = transaction {
+    fun updateCrewId(updateDroidRequest: UpdateDroidRequest): Int = transaction(podracingDb) {
         DroidTable.update(
             { DroidTable.id eq updateDroidRequest.droidId }
         ) { row ->
@@ -54,13 +55,13 @@ class DroidRepository {
     }
 
     // Only takes in one lambda -> where clause ( predicate ) so no need to wrap with ( )
-    fun deleteDroid(id: Int): Int = transaction {
+    fun deleteDroid(id: Int): Int = transaction(podracingDb) {
         DroidTable.deleteWhere {
             DroidTable.id eq id
         }
     }
 
-    fun getAllByPilotIdRAW(pilotId: Int): List<Droid> = transaction {
+    fun getAllByPilotIdRAW(pilotId: Int): List<Droid> = transaction(podracingDb) {
         exec("SELECT * FROM droid WHERE pit_crew_id = $pilotId") { resultSet ->
             val droids = mutableListOf<Droid>()
             while (resultSet.next()) {

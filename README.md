@@ -9,6 +9,10 @@ How easy it is to setup a dev / test or whatever else environment you'd like wit
 ### JWT 
 For this project the secret is stored in a config file, but should ofcourse be stored as an environment variable on the running server. 
 
+### Multiple datasources 
+Instead of relying on exposed global connection management, it is better to pass Database instances explicitly 
+into the repository or the transaction blocks.
+
 
 ### Requirements:
 

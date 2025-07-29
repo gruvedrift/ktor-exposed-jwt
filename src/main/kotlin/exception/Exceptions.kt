@@ -39,4 +39,5 @@ enum class DomainEntity {
     PIT_CREW,
     PODRACER,
     PILOT,
+    USER,
 }
