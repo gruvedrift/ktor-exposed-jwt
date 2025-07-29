@@ -1,5 +1,15 @@
 # ktor-jdbc-jwt-testcontainers
 
+This repository shows how easy it is with Exposed to work on multiple data sources. 
+How easy it is to: 
+implementing a custom login system with JWT-based access control, which is completely valid and idiomatic for many Ktor-based APIs or internal systems.
+How easy it is to setup a dev / test or whatever else environment you'd like with HOCON configuration
+
+
+### JWT 
+For this project the secret is stored in a config file, but should ofcourse be stored as an environment variable on the running server. 
+
+
 ### Requirements:
 
 - Docker technology ( [Docker Desktop](https://www.docker.com/products/docker-desktop) ,
@@ -48,7 +58,7 @@ This script will:
 |------------------------------------------------------------------------|------------------------------------------------------------------------------------|
 | [Ktor](https://ktor.io)                                                | Kotlin-based web framework                                                         |
 | [Flyway](https://flywaydb.org/)                                        | Database version control and migrations                                            |
-| [Exposed](https://github.com/JetBrains/Exposed))                       | Type-safe SQL DSL and DAO support in Kotlin                                        |
+| [Exposed](https://github.com/JetBrains/Exposed)                        | Type-safe SQL DSL and DAO support in Kotlin                                        |
 | [Status pages](https://ktor.io/docs/server-status-pages.html)          | Intercepts thrown exceptions and returns custom responses                          |
 | [Routing](https://start.ktor.io/p/routing)                             | Provides a structured routing DSL                                                  |
 | [Content Negotiation](https://start.ktor.io/p/content-negotiation)     | Provides automatic content conversion according to Content-Type and Accept headers |
@@ -58,13 +68,13 @@ This script will:
 | Custom Exceptions                                                      | Used for clearer domain-level error semantics                                      |
 | HikariCP                                                               | Lightweight, high-performance connection pool                                      |
 | Typesafe Config                                                        | Easy access to environment-specific settings                                       |
+| [JWT](https://ktor.io/docs/server-jwt.html#flow)                       | Securely transmitting information between parties. Also used for Authorization     |
 
 ### IDEAS
 
 - Using Exposed: Exposed is a lightweight SQL library on top of a JDBC driver for the Kotlin programming language.
   Cose to use the DSL
 - Add another datasource to check that one can, in fact have two datasources in Exposed.  (JWT)
-
 
 ### Ktor vs Spring Boot – Key Differences in This Project
 

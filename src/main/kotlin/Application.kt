@@ -1,5 +1,6 @@
 package com.gruvedrift
 
+import com.gruvedrift.config.AuthDatabaseConfig
 import com.gruvedrift.config.DatabaseConfig
 import com.gruvedrift.plugins.configureStatusPages
 import com.gruvedrift.routes.installRoutes
@@ -31,6 +32,7 @@ fun Application.module(environment: Environment = Environment.DEV) {
     }
     installRoutes()
     DatabaseConfig.init(environment = environment)
+    AuthDatabaseConfig.init() // TODO environment here as well ?
     configureStatusPages()
 }
 
