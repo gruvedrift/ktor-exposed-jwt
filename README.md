@@ -60,18 +60,21 @@ repository or the transaction blocks.
 
 Each repository is isolated to its own Database connection, making it easy to separate the two domains ( Podracing /
 Authentication ). Transactions are scoped to the correct datasource, keeping the persistence layer clean and explicit.
-The databases are initialized through a common [DatabaseFactory](src/main/kotlin/config/DatabaseFactory.kt) implementation.
+The databases are initialized through a common [DatabaseFactory](src/main/kotlin/config/DatabaseFactory.kt)
+implementation.
 
 ### Simple Multi-Environment Configuration with Ktor
 
 Ktor makes managing multiple environments  (development, testing) straightforward without the overhead of a large
 framework like Spring Boot.
-Configuration is handled in a single HOCON [application.conf](src/main/resources/application.conf) file with separate blocks for each environment.
+Configuration is handled in a single HOCON [application.conf](src/main/resources/application.conf) file with separate
+blocks for each environment.
 Each environment can define its own databases, JWT configuration, and deployment settings.
 
 ### Custom JWT Authentication & Authorization
 
-The project features a custom [authentication](src/main/kotlin/plugins/Authentication.kt) flow with signed JWT tokens and [role-based access control](src/main/kotlin/service/AuthService.kt) (RBAC):
+The project features a custom [authentication](src/main/kotlin/plugins/Authentication.kt) flow with signed JWT tokens
+and [role-based access control](src/main/kotlin/service/AuthService.kt) (RBAC):
 
 ```
 Users authenticate by sending their username/password to a token endpoint.
@@ -94,8 +97,8 @@ Passwords for the test users are commented in the migration script.
 Centralized error handling with Ktor’s StatusPages feature, makes debugging and API usage more predictable, consistent
 and testable. Error handling is streamlined with custom Ktor [status pages](src/main/kotlin/plugins/StatusPages.kt).
 Instead of returning generic error messages, the application provides meaningful HTTP responses and messages for invalid
-requests, authentication failures, or unexpected errors. 
-     
+requests, authentication failures, or unexpected errors.
+
 This approach makes your API more user-friendly and debuggable while keeping the controller / presentation layer clean
 and uncluttered.
 
@@ -113,16 +116,19 @@ This project uses a `BaseTestConfiguration()` to handle:
 - Ensuring clean teardown to avoid leaking database connections.
 
 The project also demonstrates two Test styles:
+
 1) **Verbose, Explicit:**  
    [PodracerIntegrationTest](src/test/kotlin/PodracerIntegrationTest.kt)
    Each test spins up its own `testApplication {}` block and configures the client and module inline.
 2) **(Preferred) Concise, Reusable Pattern:**  
    [EngineIntegrationTest](src/test/kotlin/EngineIntegrationTest.kt)
-   A cleaner pattern extracts a helper function `runEngineTest` to reduce repetitive setup. This way the tests become one-liners, focused purely on behavior.
+   A cleaner pattern extracts a helper function `runEngineTest` to reduce repetitive setup. This way the tests become
+   one-liners, focused purely on behavior.
 
 ### Local Multi-Database Setup with Docker Compose
 
-To make development and testing frictionless, this project uses [Docker Compose](docker-compose.yml) to spin up isolated PostgreSQL databases
+To make development and testing frictionless, this project uses [Docker Compose](docker-compose.yml) to spin up isolated
+PostgreSQL databases
 for both the application and authentication services.
 
 ### API Testing with Postman
@@ -136,27 +142,27 @@ A Postman collection is included under `postman/Podracer Auth & Registration API
 
 ### Technologies / patterns used
 
-| Tool / Concept                                                         | Purpose                                                                              |
-|------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
-| [Ktor](https://ktor.io)                                                | Kotlin-based web framework                                                           |
-| [Flyway](https://flywaydb.org/)                                        | Database version control and migrations                                              |
-| [Exposed](https://github.com/JetBrains/Exposed)                        | Type-safe SQL DSL and DAO support in Kotlin                                          |
-| [Status pages](https://ktor.io/docs/server-status-pages.html)          | Intercepts thrown exceptions and returns custom responses                            |
-| [Routing](https://start.ktor.io/p/routing)                             | Provides a structured routing DSL                                                    |
-| [Content Negotiation](https://start.ktor.io/p/content-negotiation)     | Provides automatic content conversion according to Content-Type and Accept headers   |
-| [kotlinx.serialization](https://start.ktor.io/p/kotlinx-serialization) | Handles JSON serialization using kotlinx.serialization library                       |
-| [PostgreSQL](https://www.postgresql.org/)                              | Relational database                                                                  |
-| [Docker Compose](https://docs.docker.com/compose/)                     | Container orchestration for dev and test environment                                 |
-| Custom Exceptions                                                      | Used for clearer domain-level error semantics                                        |
-| HikariCP                                                               | Lightweight, high-performance connection pool                                        |
-| Typesafe Config                                                        | Easy access to environment-specific settings                                         |
-| Multi-Database Contexts                                                | Explicit database connections per repository for Podracing vs Authentication domains |
-| [JUnit 5](https://junit.org/junit5/)                                   | Testing framework for unit and integration tests                                     |
-| [Ktor TestApplication](https://ktor.io/docs/testing.html)              | Lightweight embedded test server for E2E and integration testing                     |
-| [JWT](https://ktor.io/docs/server-jwt.html#flow)                       | Securely transmitting information between parties. Also used for Authorization       |
-| Layered Architecture (Controller &rarr; Service &rarr; Repository)     | Clear separation of concerns, keeps domain logic isolated from I/O layers            |
-| Role-Based Access Control (RBAC)                                       | Enforces route-level access policies based on JWT `role` claim                       |
-| Dockerized Local Development                                           | Standardizes dev/test environment across machines                                    |
+| Tool / Concept                                                            | Purpose                                                                              |
+|---------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| [Ktor](https://ktor.io)                                                   | Kotlin-based web framework                                                           |
+| [Flyway](https://flywaydb.org/)                                           | Database version control and migrations                                              |
+| [Exposed](https://github.com/JetBrains/Exposed)                           | Type-safe SQL DSL and DAO support in Kotlin                                          |
+| [Status pages](https://ktor.io/docs/server-status-pages.html)             | Intercepts thrown exceptions and returns custom responses                            |
+| [Routing](https://start.ktor.io/p/routing)                                | Provides a structured routing DSL                                                    |
+| [Content Negotiation](https://start.ktor.io/p/content-negotiation)        | Provides automatic content conversion according to Content-Type and Accept headers   |
+| [kotlinx.serialization](https://start.ktor.io/p/kotlinx-serialization)    | Handles JSON serialization using kotlinx.serialization library                       |
+| [PostgreSQL](https://www.postgresql.org/)                                 | Relational database                                                                  |
+| [Docker Compose](https://docs.docker.com/compose/)                        | Container orchestration for dev and test environment                                 |
+| Custom Exceptions                                                         | Used for clearer domain-level error semantics                                        |
+| HikariCP                                                                  | Lightweight, high-performance connection pool                                        |
+| Typesafe Config                                                           | Easy access to environment-specific settings                                         |
+| Multi-Database Contexts                                                   | Explicit database connections per repository for Podracing vs Authentication domains |
+| [JUnit 5](https://junit.org/junit5/)                                      | Testing framework for unit and integration tests                                     |
+| [Ktor TestApplication](https://ktor.io/docs/server-testing.html#test-app) | Lightweight embedded test server for E2E and integration testing                     |
+| [JWT](https://ktor.io/docs/server-jwt.html#flow)                          | Securely transmitting information between parties. Also used for Authorization       |
+| Layered Architecture (Controller &rarr; Service &rarr; Repository)        | Clear separation of concerns, keeps domain logic isolated from I/O layers            |
+| Role-Based Access Control (RBAC)                                          | Enforces route-level access policies based on JWT `role` claim                       |
+| Dockerized Local Development                                              | Standardizes dev/test environment across machines                                    |
 
 ### Ktor vs Spring Boot – Key Differences in This Project
 
