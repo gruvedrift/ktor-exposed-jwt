@@ -46,6 +46,7 @@ dependencies {
     // SECURITY
     implementation("io.ktor:ktor-server-auth")
     implementation("io.ktor:ktor-server-auth-jwt")
+    implementation("at.favre.lib:bcrypt:0.10.2") // used for encrypting and checking password
 
 }
 tasks.test{

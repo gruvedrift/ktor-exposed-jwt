@@ -1,6 +1,7 @@
 package com.gruvedrift
 
 import com.gruvedrift.config.initDatabase
+import com.gruvedrift.plugins.configureAuthentication
 import com.gruvedrift.plugins.configureStatusPages
 import com.gruvedrift.routes.installRoutes
 import com.typesafe.config.ConfigFactory
@@ -32,16 +33,23 @@ fun Application.module(environment: Environment = Environment.DEV) {
     }
 
     val config = ConfigFactory.load().getConfig(environment.configKey)
+    val jwtConfig = config.getConfig("jwt")
+
+    configureAuthentication(jwtConfig = jwtConfig)
 
     val podracingDb = initDatabase(
-        dbConfig = config.getConfig("podracing"),
+        databaseConfig = config.getConfig("podracing"),
         migrationLocation = "classpath:db/migration"
     )
     val authDb = initDatabase(
-        dbConfig = config.getConfig("auth"),
+        databaseConfig = config.getConfig("auth"),
         migrationLocation = "classpath:db/migration-auth"
     )
-    installRoutes(podracingDb.database,authDb.database)
+    installRoutes(
+        podracingDatabase = podracingDb.database,
+        authDatabase = authDb.database,
+        jwtConfig = jwtConfig
+    )
     configureStatusPages()
 }
 

@@ -2,8 +2,11 @@ package com.gruvedrift.routes
 
 import com.gruvedrift.domain.dto.request.CreatePodracerRequest
 import com.gruvedrift.exception.InvalidIdException
+import com.gruvedrift.repository.Role
 import com.gruvedrift.service.PodracerService
+import com.gruvedrift.service.requireRole
 import io.ktor.http.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -15,7 +18,8 @@ import io.ktor.server.routing.*
  * Ktor uses a type-safe DSL with the `Route` receiver.
  */
 fun Route.podracerRoutes(
-    podracerService: PodracerService
+    podracerService: PodracerService,
+    authConfigName: String
 ) {
 
     route("/api/podracer") {
@@ -38,10 +42,14 @@ fun Route.podracerRoutes(
             call.respond(HttpStatusCode.Created, "Successfully created podracer with id: $createdPodracerId")
         }
 
-        get("analytics/{id}") {
-            val id = call.parameters["id"]?.toIntOrNull() ?: throw InvalidIdException()
-            val analytics = podracerService.getAnalyticsForPodracer(id = id)
-            call.respond(HttpStatusCode.OK, analytics)
+        authenticate(authConfigName){
+            get("analytics/{id}") {
+                call.requireRole(Role.ADMIN) {
+                    val id = call.parameters["id"]?.toIntOrNull() ?: throw InvalidIdException()
+                    val analytics = podracerService.getAnalyticsForPodracer(id = id)
+                    call.respond(HttpStatusCode.OK, analytics)
+                }
+            }
         }
 
         delete("/delete/{id}") {

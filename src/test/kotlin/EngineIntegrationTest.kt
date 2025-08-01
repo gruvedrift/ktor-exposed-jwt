@@ -68,7 +68,6 @@ class EngineIntegrationTest: BaseTestConfiguration() {
         assertEquals("Updated engine with id 1 to output 2000 Megawatt!", response.bodyAsText())
     }
 
-
     @Test
     fun `delete engine - success`() = runEngineTest { client ->
         val response = client.delete("/api/engine/delete/5")

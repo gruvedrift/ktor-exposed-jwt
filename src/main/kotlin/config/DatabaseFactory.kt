@@ -8,17 +8,17 @@ import org.jetbrains.exposed.sql.Database
 import org.slf4j.LoggerFactory
 
 fun initDatabase(
-    dbConfig: Config,
+    databaseConfig: Config,
     migrationLocation: String,
 ) : DatabaseContext {
 
     // Configure Hikari
     val hikariConfig = HikariConfig().apply {
-        driverClassName = dbConfig.getString("driver")
-        jdbcUrl = dbConfig.getString("url")
-        username = dbConfig.getString("username")
-        password = dbConfig.getString("password")
-        maximumPoolSize = dbConfig.getInt("maximumPoolSize")
+        driverClassName = databaseConfig.getString("driver")
+        jdbcUrl = databaseConfig.getString("url")
+        username = databaseConfig.getString("username")
+        password = databaseConfig.getString("password")
+        maximumPoolSize = databaseConfig.getInt("maximumPoolSize")
     }
 
     // Create datasource instance
@@ -39,7 +39,7 @@ fun initDatabase(
     )
 }
 
-private val logger = LoggerFactory.getLogger("StatusPages")
+private val logger = LoggerFactory.getLogger("DatabaseFactory")
 
 fun closeDatabase(databaseContext: DatabaseContext) {
     logger.info("Closing database connection for datasource: ${databaseContext.datasource.jdbcUrl} ...")

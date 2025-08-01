@@ -26,18 +26,10 @@ class EntityNotDeletedException(
     domainEntity: DomainEntity
 ) : RuntimeException("Failed to delete entity: $domainEntity")
 
-enum class Operation {
-    CREATE,
-    READ,
-    UPDATE,
-    DELETE,
-}
-
 enum class DomainEntity {
     DROID,
     ENGINE,
     PIT_CREW,
     PODRACER,
     PILOT,
-    USER,
 }

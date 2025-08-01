@@ -13,6 +13,7 @@ import com.gruvedrift.service.PilotService
 import com.gruvedrift.service.PitCrewService
 import com.gruvedrift.service.PodracerService
 import com.gruvedrift.service.RacerRegistrationService
+import com.typesafe.config.Config
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import org.jetbrains.exposed.sql.Database
@@ -24,13 +25,17 @@ import org.jetbrains.exposed.sql.Database
  * a modular feature.
  */
 
-fun Application.installRoutes(podracingDb: Database, authDatabase: Database) {
+fun Application.installRoutes(
+    podracingDatabase: Database,
+    authDatabase: Database,
+    jwtConfig: Config
+) {
 
-    val droidRepository = DroidRepository(podracingDb)
-    val engineRepository = EngineRepository(podracingDb)
-    val pilotRepository = PilotRepository(podracingDb)
-    val pitCrewRepository = PitCrewRepository(podracingDb)
-    val podracerRepository = PodracerRepository(podracingDb)
+    val droidRepository = DroidRepository(podracingDatabase)
+    val engineRepository = EngineRepository(podracingDatabase)
+    val pilotRepository = PilotRepository(podracingDatabase)
+    val pitCrewRepository = PitCrewRepository(podracingDatabase)
+    val podracerRepository = PodracerRepository(podracingDatabase)
     val authenticationRepository = AuthRepository(authDatabase)
 
     val droidService = DroidService(droidRepository)
@@ -41,14 +46,23 @@ fun Application.installRoutes(podracingDb: Database, authDatabase: Database) {
     val registerRacerService = RacerRegistrationService(
         engineService, podracerService, pitCrewService, droidService, pilotService
     )
-    val authService = AuthService(authenticationRepository)
+    val authService = AuthService(
+        authRepository = authenticationRepository,
+        jwtConfig = jwtConfig
+    )
     routing {
         droidRoutes(droidService)
         engineRoutes(engineService)
         pilotRoutes(pilotService)
         pitcrewRoutes(pitCrewService)
-        podracerRoutes(podracerService)
-        racerRegistrationRoutes(registerRacerService)
-        authRoutes(authService)
+        podracerRoutes(
+            podracerService = podracerService,
+            authConfigName = jwtConfig.getString("config-name")
+        )
+        racerRegistrationRoutes(
+            registerRacerService = registerRacerService,
+            authConfigName = jwtConfig.getString("config-name")
+            )
+        authRoutes(authService = authService)
     }
 }

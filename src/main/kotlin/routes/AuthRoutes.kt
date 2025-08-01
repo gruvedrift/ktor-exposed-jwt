@@ -1,19 +1,21 @@
 package com.gruvedrift.routes
 
-import com.gruvedrift.exception.InvalidIdException
+import com.gruvedrift.domain.dto.request.UserAuthRequest
 import com.gruvedrift.service.AuthService
 import io.ktor.http.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.authRoutes(
-    authService: AuthService
-){
+    authService: AuthService,
+) {
     route("api/auth") {
-        get("/{id}"){
-            val userId = call.parameters["id"]?.toIntOrNull() ?: throw InvalidIdException()
-            val user = authService.getById(id = userId)
-            call.respond(HttpStatusCode.OK, user)
+        post("/get-token") {
+            val user = call.receive<UserAuthRequest>()
+            val token = authService.authenticate(user.username, user.password)
+                ?: return@post call.respond(HttpStatusCode.Unauthorized, "Invalid credentials!")
+            call.respond(token)
         }
     }
 }

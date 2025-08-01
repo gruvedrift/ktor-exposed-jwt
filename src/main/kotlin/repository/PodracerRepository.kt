@@ -57,7 +57,7 @@ class PodracerRepository(
         (PodracerTable
             .innerJoin(EngineTable, { PodracerTable.engineId }, { EngineTable.id })
             .innerJoin(PilotTable, { PodracerTable.id }, { PilotTable.podracerId })
-                )
+        )
             .selectAll()
             .where(PodracerTable.engineId eq id)
             .map { it.toPodracerAnalyticsCoreData() }

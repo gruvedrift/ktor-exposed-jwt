@@ -41,11 +41,11 @@ abstract class BaseTestConfiguration {
         val config = ConfigFactory.load().getConfig(Environment.TEST.configKey)
 
         podracingDatabase = initDatabase(
-            dbConfig = config.getConfig("podracing"),
+            databaseConfig = config.getConfig("podracing"),
             migrationLocation = "classpath:db/migration"
         )
         authenticationDatabase = initDatabase(
-            dbConfig = config.getConfig("auth"),
+            databaseConfig = config.getConfig("auth"),
             migrationLocation = "classpath:db/migration-auth"
         )
     }
