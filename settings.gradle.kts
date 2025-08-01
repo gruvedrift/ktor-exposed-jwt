@@ -1,1 +1,1 @@
-rootProject.name = "ktor-jdbc-jwt-testcontainers"
+rootProject.name = "ktor-exposed-jwt"
