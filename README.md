@@ -153,13 +153,13 @@ A Postman collection is included under `postman/Podracer Auth & Registration API
 | [kotlinx.serialization](https://start.ktor.io/p/kotlinx-serialization)    | Handles JSON serialization using kotlinx.serialization library                       |
 | [PostgreSQL](https://www.postgresql.org/)                                 | Relational database                                                                  |
 | [Docker Compose](https://docs.docker.com/compose/)                        | Container orchestration for dev and test environment                                 |
-| Custom Exceptions                                                         | Used for clearer domain-level error semantics                                        |
-| HikariCP                                                                  | Lightweight, high-performance connection pool                                        |
-| Typesafe Config                                                           | Easy access to environment-specific settings                                         |
-| Multi-Database Contexts                                                   | Explicit database connections per repository for Podracing vs Authentication domains |
 | [JUnit 5](https://junit.org/junit5/)                                      | Testing framework for unit and integration tests                                     |
 | [Ktor TestApplication](https://ktor.io/docs/server-testing.html#test-app) | Lightweight embedded test server for E2E and integration testing                     |
 | [JWT](https://ktor.io/docs/server-jwt.html#flow)                          | Securely transmitting information between parties. Also used for Authorization       |
+| Custom Exceptions                                                         | Used for clearer domain-level error semantics                                        |
+| HikariCP                                                                  | Lightweight, high-performance connection pool                                        |
+| Typesafe Config                                                           | Easy access to environment-specific settings                                         |
+| Multi-Database Contexts                                                   | Explicit database connections per repository for Podracing and Authentication domain |
 | Layered Architecture (Controller &rarr; Service &rarr; Repository)        | Clear separation of concerns, keeps domain logic isolated from I/O layers            |
 | Role-Based Access Control (RBAC)                                          | Enforces route-level access policies based on JWT `role` claim                       |
 | Dockerized Local Development                                              | Standardizes dev/test environment across machines                                    |
